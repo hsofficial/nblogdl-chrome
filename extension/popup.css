@@ -4,6 +4,7 @@
   --accent-text: #327c5b; --muted: #7b8d82; --border: #e0e9e2; --input-border: #d1ded5;
   --soft: #edf5ef; --soft-border: #c4dccd; --focus: #86d6b2; --disabled: #bac9bf;
   --caption: #153429cc; --tile: #e8ede9; --log: #edf2ee;
+  --header: #ffffffd9; --mode-track: #eaf0ec; --mode-button: white; --mode-active: #234f39;
   color: var(--ink); background: var(--page);
 }
 :root.iu-theme {
@@ -11,16 +12,33 @@
   --accent-text: #75479c; --muted: #8d7a9c; --border: #e7dcef; --input-border: #d6c3e6;
   --soft: #f2eafa; --soft-border: #d7c2e9; --focus: #c2de65; --disabled: #c8bbd3;
   --caption: #48305bd9; --tile: #eee6f3; --log: #f0eaf5;
+  --mode-track: #eee5f4; --mode-active: #704692;
   background-image: radial-gradient(ellipse at 0 0, #eff8c28a, transparent 48%), radial-gradient(ellipse at 100% 30%, #e9d9f482, transparent 62%);
+}
+:root[data-color-mode="dark"] {
+  color-scheme: dark;
+  --ink: #e2eee7; --page: #121a17; --surface: #1b2620; --header: #17201ceb;
+  --accent: #25875b; --accent-hover: #2d9b6a; --accent-text: #8cd9ae; --muted: #a6b9ad;
+  --border: #34463a; --input-border: #4e6355; --soft: #22382a; --soft-border: #46664f;
+  --focus: #9be8b8; --disabled: #43554a; --caption: #14231ee8; --tile: #263a2f; --log: #0e1712;
+  --mode-track: #202e25; --mode-button: #3a5142; --mode-active: #f0fff4; --mode-error: #ffb4a9;
+}
+:root.iu-theme[data-color-mode="dark"] {
+  --ink: #f0e6f6; --page: #1b1622; --surface: #282032; --header: #231c2be8;
+  --accent: #8653b5; --accent-hover: #9564c3; --accent-text: #d2b3ee; --muted: #c0aecf;
+  --border: #493a59; --input-border: #6a567f; --soft: #382744; --soft-border: #624579;
+  --focus: #d1f15f; --disabled: #574563; --caption: #2b1c38eb; --tile: #3c2e48; --log: #16101e;
+  --mode-track: #30253a; --mode-button: #574069; --mode-active: #f3e7ff;
+  background-image: radial-gradient(ellipse at 0 0, #7a91201a, transparent 48%), radial-gradient(ellipse at 100% 30%, #613e8829, transparent 62%);
 }
 * {box-sizing: border-box;}
 body {width: 420px; margin: 0; font-size: 13px;}
 button, input, select {font: inherit;}
 button, summary, select, input[type="checkbox"] {cursor: pointer;}
 button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible, a:focus-visible {outline: 3px solid var(--focus); outline-offset: 3px;}
-header {display: flex; align-items: center; justify-content: space-between; padding: 20px 22px 18px; background: #ffffffd9; border-bottom: 1px solid var(--border);}
+header {display: flex; align-items: center; justify-content: space-between; padding: 20px 22px 18px; background: var(--header); border-bottom: 1px solid var(--border);}
 .header-actions {display: flex; flex-direction: column; align-items: flex-end; gap: 6px;}
-.github-button {color: var(--ink); border: 1px solid var(--soft-border); border-radius: 8px; padding: 5px 10px; font-size: 11px; font-weight: 700; text-decoration: none; background: var(--surface);}
+.github-button {display: grid; place-items: center; width: 34px; height: 34px; color: var(--ink); border: 1px solid var(--border); border-radius: 10px; text-decoration: none; background: var(--surface);}
 .github-button:hover {background: var(--soft);}
 .brand {display: flex; align-items: center; gap: 12px;}
 .mark {display: block; width: 44px; height: 44px; object-fit: contain;}
@@ -30,9 +48,11 @@ p {margin: 0; line-height: 1.65;}
 .version {font-size: 9px; color: var(--muted);}
 main {padding: 18px;}
 .iu-banner {display: flex; align-items: center; gap: 12px; padding: 6px 14px; margin-bottom: 20px; border: 1px solid #dfceeec2; border-radius: 18px; background: radial-gradient(circle at 15% 30%, #e3fb96a8, transparent 50%), linear-gradient(115deg, #fffef8, #f1e5fa); box-shadow: 0 5px 18px #784d9b0d;}
-.iu-banner img {width: 54px; height: 86px; flex-shrink: 0;}
-.iu-banner p {font-size: 12px; font-weight: 700; color: #704692; margin-top: 5px; letter-spacing: -.4px;}
-.iu-kicker {font-size: 9px; letter-spacing: 2px; color: #795693; font-weight: 700;}
+.iu-banner img {width: 62px; height: 94px; flex-shrink: 0;}
+.iu-banner p {font-size: 12px; font-weight: 700; color: #704692; letter-spacing: -.4px;}
+.iu-theme[data-color-mode="dark"] .iu-banner {background: radial-gradient(circle at 15% 30%, #cde7732b, transparent 50%), linear-gradient(115deg, #2c2e20, #35263f); border-color: #61513e; box-shadow: none;}
+.iu-theme[data-color-mode="dark"] .iu-banner p {color: #e0c5f4;}
+[data-color-mode="dark"] #notice.error {color: #ffb4a9;}
 .iu-theme .image-grid {max-height: 240px;}
 .post-panel {margin-top: 0;}
 .eyebrow {display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 11px;}

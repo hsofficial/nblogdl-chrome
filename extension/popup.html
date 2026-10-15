@@ -5,18 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>네이버 블로그 이미지 다운로더</title>
   <link rel="stylesheet" href="popup.css">
+  <link rel="stylesheet" href="theme-controls.css">
+  <script src="theme.js" defer></script>
   <script src="core.js" defer></script>
   <script src="popup.js" defer></script>
 </head>
 <body>
   <header>
     <div class="brand"><img class="mark" src="icons/icon-48.png" alt="" aria-hidden="true"><div><h1>블로그 이미지 저장</h1><p>사진은 선명하게, 저장은 간편하게</p></div></div>
-    <div class="header-actions"><a id="githubProfile" class="github-button" href="https://github.com/hsofficial" target="_blank" rel="noopener noreferrer" aria-label="hsofficial GitHub 프로필 열기">GitHub</a><span class="version">v0.3.0</span></div>
+    <div class="header-actions"><a id="githubProfile" class="github-button" href="https://github.com/hsofficial" target="_blank" rel="noopener noreferrer" aria-label="hsofficial 깃허브 프로필 열기" title="깃허브 프로필"><img class="github-icon" src="icons/github.svg" width="20" height="20" alt="" aria-hidden="true"></a><span class="version">v0.4.0</span></div>
   </header>
   <main>
+    <div class="appearance-row"><span class="appearance-label">화면 모드</span><div class="color-mode-control" role="group" aria-label="화면 모드"><button type="button" data-color-mode-value="system" aria-pressed="true" title="시스템 설정 따르기">시스템</button><button type="button" data-color-mode-value="light" aria-pressed="false">라이트</button><button type="button" data-color-mode-value="dark" aria-pressed="false">다크</button></div></div>
+    <p id="colorModeStatus" class="color-mode-status" role="status" hidden></p>
     <section id="iuThemeBanner" class="iu-banner" aria-label="아이유 응원봉 테마" hidden>
       <img src="iu-lightstick.svg" alt="" aria-hidden="true">
-      <div><span class="iu-kicker">IU LIGHT</span><p>손틈새로 비추는 아이유 참좋다&#x1F49C;</p></div>
+      <p>손틈새로 비추는 아이유 참좋다&#x1F49C;</p>
     </section>
     <section class="post-panel">
       <div class="eyebrow">현재 게시글 <button id="refresh" class="text-button" type="button">다시 찾기</button></div>

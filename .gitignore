@@ -1,0 +1,6 @@
+node_modules/
+dist/
+artifacts/
+*.log
+.release-work/
+assets/iu-lightstick-reference.png

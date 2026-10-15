@@ -6,6 +6,8 @@
   <title>오픈소스 안내 | 네이버 블로그 이미지 다운로더</title>
   <link rel="icon" href="icons/icon-128.png" type="image/png">
   <link rel="stylesheet" href="about.css">
+  <link rel="stylesheet" href="theme-controls.css">
+  <script src="theme.js" defer></script>
   <script src="about.js" defer></script>
 </head>
 <body>
@@ -22,6 +24,16 @@
       <span class="version" id="projectVersion" aria-label="확장프로그램 버전">버전 확인 중</span>
     </header>
 
+    <div class="appearance-row appearance-bar">
+      <span class="appearance-label">화면 모드</span>
+      <div class="color-mode-control" role="group" aria-label="화면 모드">
+        <button type="button" data-color-mode-value="system" aria-pressed="true">시스템</button>
+        <button type="button" data-color-mode-value="light" aria-pressed="false">라이트</button>
+        <button type="button" data-color-mode-value="dark" aria-pressed="false">다크</button>
+      </div>
+    </div>
+    <p id="colorModeStatus" class="color-mode-status" role="status" hidden></p>
+
     <main id="main">
       <section class="hero" aria-labelledby="pageTitle">
         <p class="eyebrow">ABOUT &amp; OPEN SOURCE</p>
@@ -29,7 +41,7 @@
         <p class="hero-description">네이버 블로그 이미지 다운로더의 오픈소스 출처와 라이선스 안내입니다.
           원본 프로젝트, 참고 자료, 개발 도구의 역할을 확인하실 수 있습니다.</p>
         <div class="hero-actions">
-          <a class="button primary" href="https://github.com/hsofficial" target="_blank" rel="noreferrer noopener">hsofficial GitHub <span class="external" aria-hidden="true">&#8599;</span><span class="sr-only"> (새 탭)</span></a>
+          <a class="button primary profile-link" href="https://github.com/hsofficial" target="_blank" rel="noreferrer noopener" aria-label="hsofficial 프로필 열기 (새 탭)" title="hsofficial 프로필 열기 (새 탭)"><img class="github-icon" src="icons/github.svg" alt="" aria-hidden="true" width="22" height="22"></a>
           <a class="button secondary" href="#license">라이선스 전문 보기 <span aria-hidden="true">&#8595;</span></a>
         </div>
       </section>
@@ -53,6 +65,16 @@
             <a href="https://github.com/hsofficial" target="_blank" rel="noreferrer noopener">작성자<span class="sr-only"> (새 탭)</span></a>
             <a href="https://github.com/hsofficial/nblog-img-downloder/blob/main/LICENSE" target="_blank" rel="noreferrer noopener">원본 라이선스<span class="sr-only"> (새 탭)</span></a>
           </nav>
+          <div class="source-note">
+            <p><strong>동봉 아이콘 · GitHub Octicons</strong></p>
+            <p>프로필 링크에는 GitHub Inc.의 Octicons 중 GitHub 마크 SVG만 포함합니다.
+              JavaScript 라이브러리는 동봉하지 않습니다. MIT License · Copyright (c) 2026 GitHub Inc.</p>
+            <nav class="credit-links" aria-label="동봉 아이콘 출처와 라이선스">
+              <a href="https://github.com/primer/octicons" target="_blank" rel="noreferrer noopener">공식 저장소<span class="sr-only"> (새 탭)</span></a>
+              <a href="https://github.com/primer/octicons/blob/main/icons/mark-github-16.svg" target="_blank" rel="noreferrer noopener">아이콘 원본<span class="sr-only"> (새 탭)</span></a>
+              <a href="icons/OCTICONS-LICENSE.txt" target="_blank" rel="noreferrer noopener">동봉 MIT 라이선스<span class="sr-only"> (새 탭)</span></a>
+            </nav>
+          </div>
         </article>
       </section>
 

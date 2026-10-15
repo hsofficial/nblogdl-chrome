@@ -1,0 +1,10 @@
+/* Shared controls inherit each page's light, dark, and IU palette. */
+.appearance-row {display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px;}
+.appearance-label {font-size: 11px; color: var(--muted);}
+.color-mode-control {display: inline-flex; padding: 3px; gap: 2px; border: 1px solid var(--border); border-radius: 10px; background: var(--mode-track, #eaf0ec);}
+.color-mode-control button {font: inherit; font-size: 10px; line-height: 1.5; border: 0; border-radius: 7px; padding: 5px 9px; color: var(--muted); background: transparent; cursor: pointer; white-space: nowrap;}
+.color-mode-control button[aria-pressed="true"] {color: var(--mode-active, #234f39); background: var(--mode-button, white); box-shadow: 0 1px 4px #00000014; font-weight: 700;}
+.color-mode-control button:focus-visible {outline: 3px solid var(--focus); outline-offset: 2px;}
+.color-mode-status {font-size: 11px; margin: 0 0 12px; color: var(--mode-error, #a43832);}
+.github-icon {display: block; width: 20px; height: 20px; object-fit: contain;}
+[data-color-mode="dark"] .github-button .github-icon {filter: invert(1);}

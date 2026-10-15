@@ -9,7 +9,8 @@
   <path d="M14 86V63C14 30 31 12 56 12s42 18 42 51v23H14Z" fill="url(#glass)" stroke="#d9d5df" stroke-width="2"/>
   <path d="M24 59c0-19 8-30 18-35" stroke="white" stroke-width="5" stroke-linecap="round" opacity=".9"/>
   <path d="M56 77C46 68 29 56 30 42c1-15 19-19 26-6 7-13 25-9 26 6 1 14-16 26-26 35Z" fill="#d8fa6d" fill-opacity=".2" stroke="#c6ee57" stroke-width="5" stroke-linejoin="round"/>
-  <path d="M49 45v15c0 6 4 7 7 4V43c0-5 9-5 9 0v15c0 4-2 7-5 9" stroke="#bce44e" stroke-width="3" stroke-linecap="round"/>
+  <!-- Separate I and U strokes stay legible inside the heart at popup size. -->
+  <path d="M43 43v18M52 43v15c0 8 14 8 14 0V43" stroke="#aad33b" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
   <rect x="12" y="82" width="88" height="12" rx="6" fill="#f6f5f3" stroke="#d9d5df" stroke-width="2"/>
   <path d="M19 94h74l-10 22H29L19 94Z" fill="url(#band)"/>
   <path d="M29 116h54l-9 45c-1 6-7 9-18 9s-17-3-18-9l-9-45Z" fill="url(#handle)" stroke="#d9d5df" stroke-width="1.5"/>

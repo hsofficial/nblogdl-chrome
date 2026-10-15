@@ -1,0 +1,7 @@
+{
+  "name": "nblogdl-chrome",
+  "version": "0.4.0",
+  "private": true,
+  "license": "GPL-3.0-only",
+  "scripts": {"test": "node --test --test-reporter=tap tests/*.test.cjs", "package": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package.ps1", "smoke": "node scripts/browser-smoke.cjs"}
+}

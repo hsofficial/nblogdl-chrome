@@ -1,4 +1,4 @@
-Naver Blog Image Downloader for Chrome, version 0.3.0
+Naver Blog Image Downloader for Chrome, version 0.4.0
 SPDX-License-Identifier: GPL-3.0-only
 
 This extension reimplements the DOM metadata selection and w3840 candidate
@@ -19,6 +19,9 @@ Version 0.3.0 retains that fix and adds the hsofficial GitHub profile link,
 a local open-source credits/license page, and a title-triggered IU palette
 with a locally authored light-stick SVG. The product photograph supplied as
 visual reference is not included in the extension package.
+Version 0.4.0 removes the IU LIGHT caption, redraws the I/U inside the heart,
+uses icon-only profile links, and adds shared system/light/dark appearance
+preferences. Appearance storage is separate from download queue settings.
 Explicit HTML/text/JSON/XML error artifacts created by this extension are
 removed before retrying; ambiguous MIME types are retained for inspection.
 The Selenium image-viewer/network selection is not included.
@@ -26,6 +29,14 @@ The Selenium image-viewer/network selection is not included.
 The gallery-dl Naver Blog extractor was consulted for strategy comparison:
 https://github.com/mikf/gallery-dl/blob/master/gallery_dl/extractor/naverblog.py
 No gallery-dl source files or dependencies are included in this extension.
+
+Bundled GitHub mark SVG: GitHub Inc., Primer Octicons, MIT License.
+Source: https://github.com/primer/octicons/blob/main/icons/mark-github-16.svg
+Source blob: 0e55a8ef2db1913cb35f81ae09ffdb58b5422319
+Access date: 2026-10-15
+Copyright (c) 2026 GitHub Inc.
+See icons/OCTICONS-LICENSE.txt for the complete MIT license.
+Only the SVG is included, not the Octicons JavaScript library.
 
 This program is distributed under GNU GPL version 3, without any warranty.
 See the included LICENSE file for the complete terms.
