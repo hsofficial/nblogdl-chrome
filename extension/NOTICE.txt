@@ -1,4 +1,4 @@
-Naver Blog Image Downloader for Chrome, version 0.1.0
+Naver Blog Image Downloader for Chrome, version 0.2.0
 SPDX-License-Identifier: GPL-3.0-only
 
 This extension reimplements the DOM metadata selection and w3840 candidate
@@ -8,9 +8,11 @@ Reference URL: https://github.com/hsofficial/nblog-img-downloder
 Access date: 2026-10-14
 
 Changes: JavaScript port for Chrome Manifest V3, passive content scripts,
-Korean popup interface, original-first URL candidates with other query fields
+Korean popup interface, w3840-first URL candidates with other query fields
 preserved, selection downloads, persisted queue, actual download completion
-tracking, fallback, cancellation, and automatic-download history.
+tracking, fallback, cancellation, atomic per-job folders, filename suggestions,
+and a generated framed-N icon with a lower-left download badge.
+Automatic downloading and selectable image quality were removed in 0.2.0.
 Explicit HTML/text/JSON/XML error artifacts created by this extension are
 removed before retrying; ambiguous MIME types are retained for inspection.
 The Selenium image-viewer/network selection is not included.
@@ -26,5 +28,7 @@ All executable sources are included in this archive; no build step is needed.
 Installation: open chrome://extensions, enable Developer mode, choose
 Load unpacked, and select the unpacked directory containing manifest.json.
 Reload existing Naver Blog tabs after installing.
-Automatic downloading is enabled by default. Use the popup switch to disable
-future automatic jobs, and Stop on a progress card to cancel existing work.
+Select images in the popup and press Download to start saving. Visiting a post
+does not start downloads. Use Stop on a progress card to cancel existing work.
+Reload the extension on chrome://extensions after updating. Legacy automatic
+work is canceled during migration; manual work retains its saved folder.

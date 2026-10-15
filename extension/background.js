@@ -5,10 +5,9 @@
 importScripts('core.js');
 
 const Core = globalThis.NBlogCore;
-const DEFAULT_SETTINGS = {autoDownload: true, quality: 'original', folder: 'NaverBlog'};
+const DEFAULT_SETTINGS = {folder: 'NaverBlog'};
 const ACTIVE = new Set(['queued', 'starting', 'downloading', 'canceling']);
 const MAX_CONCURRENT = 3;
-const MAX_HISTORY = 2000;
 let state;
 let serial = Promise.resolve();
 
@@ -19,8 +18,26 @@ function transact(operation) {
   const result = serial.then(async () => {
     if (!state) {
       const stored = await chrome.storage.local.get('state');
-      state = stored.state || {settings: {...DEFAULT_SETTINGS}, jobs: [], history: {}, logs: []};
-      state.settings = {...DEFAULT_SETTINGS, ...state.settings};
+      state = stored.state || {schemaVersion: 2, settings: {...DEFAULT_SETTINGS}, jobs: [], logs: []};
+      state.settings = {folder: Core.normalizeFolder(state.settings?.folder)};
+      // Updating an existing install must not resurrect the removed auto mode.
+      // Cancel its remaining work before reconciliation can dispatch a queued
+      // task. Manual jobs retain their original folder and finish normally.
+      if (state.schemaVersion !== 2) {
+        for (const job of state.jobs) {
+          if (!job.automatic) continue;
+          for (const task of job.tasks) {
+            if (!ACTIVE.has(task.status)) continue;
+            task.cancelRequested = true;
+            task.status = task.status === 'queued' ? 'canceled' : 'canceling';
+            task.error = 'USER_CANCELED';
+          }
+        }
+        state.schemaVersion = 2;
+        delete state.history;
+        log('settings_migrated', 'mode=manual quality=w3840');
+        await chrome.storage.local.set({state});
+      }
     }
     const value = await operation();
     prune();
@@ -44,12 +61,6 @@ function prune() {
   const active = state.jobs.filter(job => job.tasks.some(task => ACTIVE.has(task.status)));
   const finished = state.jobs.filter(job => !job.tasks.some(task => ACTIVE.has(task.status))).slice(-30);
   state.jobs = [...finished, ...active].sort((a, b) => a.createdAt - b.createdAt);
-  const history = Object.entries(state.history).sort((a, b) => b[1] - a[1]).slice(0, MAX_HISTORY);
-  state.history = Object.fromEntries(history);
-}
-
-function historyKey(postKey, imageId) {
-  return `${postKey}|${imageId}`;
 }
 
 function allTasks() {
@@ -88,31 +99,27 @@ function validateScan(raw, senderUrl) {
   return {post, title: String(raw.title || post.key).slice(0, 300), images};
 }
 
-async function enqueue(scan, tabId, selectedIds, automatic, documentId = '') {
-  const ids = selectedIds ? new Set(selectedIds) : null;
+async function enqueue(scan, tabId, selectedIds, folder) {
+  const ids = new Set(selectedIds);
   const existing = allTasks();
   const images = scan.images.filter(image => {
-    if (ids && !ids.has(image.id)) return false;
+    if (!ids.has(image.id)) return false;
     if (existing.some(({job, task}) => job.post.key === scan.post.key && task.image.id === image.id && ACTIVE.has(task.status))) return false;
-    if (!automatic) return true;
-    if (state.history[historyKey(scan.post.key, image.id)]) return false;
-    // A failed auto attempt is retried only on a new document or a manual
-    // click, so DOM churn cannot create an endless network retry loop.
-    return !existing.some(({job, task}) => job.automatic && job.documentId === documentId &&
-      job.post.key === scan.post.key && task.image.id === image.id && ['failed', 'canceled', 'complete'].includes(task.status));
+    return true;
   });
   if (!images.length) return {queued: 0};
-  const job = {id: crypto.randomUUID(), tabId, documentId, automatic, post: scan.post,
-    title: scan.title, createdAt: Date.now(), folder: state.settings.folder, quality: state.settings.quality,
-    tasks: images.map(image => ({image, candidates: Core.getImageCandidates(image.src, state.settings.quality),
+  const job = {id: crypto.randomUUID(), tabId, post: scan.post,
+    title: scan.title, createdAt: Date.now(), folder, quality: 'w3840',
+    tasks: images.map(image => ({image, filename: Core.buildFilename(scan.post, image, folder, 'w3840'),
+      candidates: Core.getImageCandidates(image.src, 'w3840'),
       attempt: 0, status: 'queued', downloadId: null, error: '', bytes: 0}))};
   state.jobs.push(job);
-  log('job_queued', `mode=${automatic ? 'auto' : 'manual'} count=${images.length}`);
+  log('job_queued', `mode=manual quality=w3840 count=${images.length}`);
   // Checkpoint queued tasks BEFORE handing them to Chrome. If the worker is
   // terminated mid-dispatch, recovery can reconcile a starting task by URL.
   await chrome.storage.local.set({state});
   await pump();
-  return {queued: images.length, jobId: job.id};
+  return {queued: images.length, jobId: job.id, folder: job.folder};
 }
 
 async function pump() {
@@ -132,7 +139,7 @@ async function pump() {
     await chrome.storage.local.set({state});
     try {
       task.downloadId = await chrome.downloads.download({url,
-        filename: Core.buildFilename(job.post, task.image, job.folder, job.quality),
+        filename: task.filename || Core.buildFilename(job.post, task.image, job.folder, job.quality),
         conflictAction: 'uniquify', saveAs: false});
     } catch {
       retryOrFail(task, 'START_FAILED');
@@ -178,6 +185,7 @@ function retryOrFail(task, reason) {
 }
 
 async function settle(job, task, item) {
+  if (item.filename) task.savedFilename = item.filename;
   if (item.state === 'complete') {
     if (!item.mime?.toLowerCase().startsWith('image/')) {
       const mime = (item.mime || '').split(';')[0].trim().toLowerCase();
@@ -205,7 +213,6 @@ async function settle(job, task, item) {
       task.status = 'complete';
       task.bytes = Math.max(0, item.fileSize || item.bytesReceived || 0);
       task.error = '';
-      state.history[historyKey(job.post.key, task.image.id)] = Date.now();
       log('download_complete', `id=${item.id} bytes=${task.bytes}`);
     }
   } else if (item.state === 'interrupted') {
@@ -273,7 +280,6 @@ async function route(message, sender) {
     const scan = validateScan(message.scan, sender.url);
     await chrome.storage.session.set({[`scan:${sender.tab.id}`]: {scan, frameId: sender.frameId, documentId: sender.documentId}});
     log('scan_received', `tab=${sender.tab.id} count=${scan.images.length}`);
-    if (state.settings.autoDownload) await enqueue(scan, sender.tab.id, null, true, sender.documentId || `${sender.tab.id}:${sender.frameId}`);
     return {count: scan.images.length};
   }
   // Content scripts can only submit scans. GUI-only messages require an
@@ -282,9 +288,9 @@ async function route(message, sender) {
   if (message.type === 'GET_VIEW') {await reconcile(); return view(message.tabId);}
   if (message.type === 'SAVE_SETTINGS') {
     const settings = message.settings;
-    if (typeof settings?.autoDownload !== 'boolean' || !['original', 'w3840'].includes(settings.quality)) throw new Error('INVALID_SETTINGS');
-    state.settings = {autoDownload: settings.autoDownload, quality: settings.quality, folder: Core.normalizeFolder(settings.folder)};
-    log('settings_saved', `auto=${state.settings.autoDownload ? 'on' : 'off'} quality=${state.settings.quality}`);
+    if (!settings || typeof settings.folder !== 'string') throw new Error('INVALID_SETTINGS');
+    state.settings = {folder: Core.normalizeFolder(settings.folder)};
+    log('settings_saved', 'quality=w3840');
     return state.settings;
   }
   if (message.type === 'DOWNLOAD') {
@@ -294,7 +300,11 @@ async function route(message, sender) {
     if (!Array.isArray(message.ids) || !message.ids.length) throw new Error('EMPTY_SELECTION');
     const validIds = new Set(snapshot.scan.images.map(image => image.id));
     if (message.ids.length > snapshot.scan.images.length || message.ids.some(id => typeof id !== 'string' || !validIds.has(id))) throw new Error('INVALID_SELECTION');
-    return enqueue(snapshot.scan, message.tabId, message.ids, false);
+    // Folder validation and job creation share one transaction. The GUI sends
+    // the currently typed path with the click, including an unsaved draft.
+    const folder = Core.normalizeFolder(message.folder ?? state.settings.folder);
+    state.settings = {folder};
+    return enqueue(snapshot.scan, message.tabId, message.ids, folder);
   }
   if (message.type === 'CANCEL') {
     const job = state.jobs.find(candidate => candidate.id === message.jobId);
@@ -321,11 +331,6 @@ async function route(message, sender) {
     await pump();
     return {};
   }
-  if (message.type === 'CLEAR_HISTORY') {
-    state.history = {};
-    log('auto_history_cleared');
-    return {};
-  }
   throw new Error('UNKNOWN_MESSAGE');
 }
 
@@ -334,15 +339,41 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
   return true;
 });
 chrome.downloads.onChanged.addListener(delta => {
-  if (!delta.state || delta.state.current === 'in_progress') return;
+  if (!delta.filename && (!delta.state || delta.state.current === 'in_progress')) return;
   transact(async () => {
     const match = allTasks().find(({task}) => task.downloadId === delta.id && ['downloading', 'canceling'].includes(task.status));
     if (match) {
       const [item] = await chrome.downloads.search({id: delta.id});
-      if (item) await settle(match.job, match.task, item);
+      if (item?.filename) match.task.savedFilename = item.filename;
+      if (item && item.state !== 'in_progress') await settle(match.job, match.task, item);
       await pump();
     }
   });
+});
+chrome.downloads.onDeterminingFilename.addListener((item, suggest) => {
+  if (item.byExtensionId !== chrome.runtime.id) {suggest(); return;}
+  const finish = snapshot => {
+    let suggestion;
+    try {
+      const pairs = (snapshot?.jobs || []).flatMap(job => job.tasks.map(task => ({job, task})));
+      const match = pairs.find(({task}) => task.downloadId === item.id) ||
+        pairs.find(({task}) => task.status === 'starting' && task.candidates[task.attempt] === item.url);
+      if (match) {
+        const filename = match.task.filename || Core.buildFilename(match.job.post, match.task.image, match.job.folder, match.job.quality);
+        suggestion = {filename, conflictAction: 'uniquify'};
+      }
+    } catch {console.error('[NBlog] filename_suggestion_unavailable');}
+    if (suggestion) suggest(suggestion); else suggest();
+  };
+  // Do NOT acquire the mutation lock here: downloads.download() can wait for
+  // this callback while it already holds that lock. Cold worker reads are
+  // independent, and suggest is always called exactly once.
+  if (state) {
+    finish(state);
+    return;
+  }
+  chrome.storage.local.get('state').then(stored => finish(stored.state), () => finish(null));
+  return true;
 });
 chrome.alarms.onAlarm.addListener(alarm => {
   if (alarm.name === 'queue-recovery') transact(reconcile);

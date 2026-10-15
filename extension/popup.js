@@ -5,7 +5,6 @@ let currentScan = null;
 let tabId;
 let lastSignature = '';
 let settingsLoaded = false;
-let savedSettings = null;
 let refreshPending = false;
 
 async function request(type, extra = {}) {
@@ -27,6 +26,29 @@ function updateSelection() {
   $('selectAll').checked = count > 0 && count === selected.size;
   $('selectAll').indeterminate = selected.size > 0 && selected.size < count;
   $('selectAll').disabled = !count;
+}
+
+function updateDestination() {
+  let folder;
+  try {folder = NBlogCore.normalizeFolder($('folder').value);} catch {
+    $('destination').textContent = '저장 경로: 하위 폴더 이름을 확인해주세요.';
+    return;
+  }
+  const postFolder = currentScan ? '/' + NBlogCore.sanitizeSegment(currentScan.post.key) : '';
+  $('destination').textContent = `저장 위치: 다운로드/${folder}${postFolder}`;
+}
+
+function readFolder() {
+  try {
+    const folder = NBlogCore.normalizeFolder($('folder').value);
+    $('folder').setCustomValidity('');
+    return folder;
+  } catch {
+    const message = '사진/네이버처럼 하위 경로를 입력해주세요. 절대 경로와 ..는 사용할 수 없습니다.';
+    $('folder').setCustomValidity(message);
+    $('folder').reportValidity();
+    throw new Error('FOLDER_INVALID');
+  }
 }
 
 function renderScan(scan) {
@@ -67,6 +89,7 @@ function renderScan(scan) {
     $('images').append(card);
   }
   updateSelection();
+  updateDestination();
 }
 
 function renderJobs(jobs) {
@@ -79,7 +102,7 @@ function renderJobs(jobs) {
     const box = document.createElement('div'); box.className = 'job';
     const line = document.createElement('div'); line.className = 'job-line';
     const summary = document.createElement('strong');
-    summary.textContent = `${job.automatic ? '자동' : '선택'} 저장 · 완료 ${counts.complete}/${job.tasks.length}`;
+    summary.textContent = `선택 저장 · 완료 ${counts.complete}/${job.tasks.length}`;
     line.append(summary);
     if (counts.active) {
       const cancel = document.createElement('button'); cancel.type = 'button'; cancel.className = 'text-button'; cancel.textContent = '중지';
@@ -95,7 +118,18 @@ function renderJobs(jobs) {
       const errors = [...new Set(job.tasks.filter(task => task.status === 'failed').map(task => task.error))];
       details.textContent += ` · ${errors.join(', ')}`;
     }
-    box.append(line, progress, details); $('jobs').append(box);
+    const destination = document.createElement('p'); destination.className = 'saved-path';
+    destination.textContent = `요청 경로: 다운로드/${job.folder}/${NBlogCore.sanitizeSegment(job.post.key)}`;
+    box.append(line, progress, details, destination);
+    const completed = job.tasks.findLast(task => task.status === 'complete' && task.savedFilename);
+    if (completed) {
+      const actual = document.createElement('p'); actual.className = 'saved-path';
+      actual.textContent = `실제 저장: ${completed.savedFilename}`;
+      const show = document.createElement('button'); show.type = 'button'; show.className = 'text-button'; show.textContent = '저장 폴더 열기';
+      show.addEventListener('click', () => guarded(() => chrome.downloads.show(completed.downloadId)));
+      box.append(actual, show);
+    }
+    $('jobs').append(box);
   }
 }
 
@@ -104,30 +138,29 @@ async function refresh() {
   refreshPending = true;
   try {
     const view = await request('GET_VIEW', {tabId});
-    savedSettings = {...view.settings};
     if (!settingsLoaded) {
-      $('autoDownload').checked = view.settings.autoDownload;
-      $('quality').value = view.settings.quality; $('folder').value = view.settings.folder;
+      $('folder').value = view.settings.folder;
       settingsLoaded = true;
     }
     renderScan(view.scan); renderJobs(view.jobs);
+    updateDestination();
     $('logs').textContent = view.logs.join('\n') || 'Waiting for scan.';
   } finally {refreshPending = false;}
 }
 
 async function saveSettings() {
-  const folder = NBlogCore.normalizeFolder($('folder').value);
-  const settings = await request('SAVE_SETTINGS', {settings: {autoDownload: $('autoDownload').checked,
-    quality: $('quality').value, folder}});
-  savedSettings = {...settings};
+  const folder = readFolder();
+  const settings = await request('SAVE_SETTINGS', {settings: {folder}});
   $('folder').value = settings.folder;
-  notice(settings.autoDownload ? '설정을 저장했습니다. 게시글 방문 시 자동 저장됩니다.' : '설정을 저장했습니다. 선택 저장을 사용할 수 있습니다.');
+  updateDestination();
+  notice(`저장 경로를 적용했습니다: 다운로드/${settings.folder}`);
 }
 
 async function guarded(action) {
-  try {await action();} catch {
+  try {await action();} catch (error) {
     console.error('[NBlog] popup_action_failed');
-    notice('요청을 처리하지 못했습니다. 저장 경로를 확인하거나 게시글을 새로고침해주세요.', true);
+    notice(error.message === 'FOLDER_INVALID' ? '사진/네이버처럼 하위 경로를 입력해주세요. 절대 경로와 ..는 사용할 수 없습니다.' :
+      '요청을 처리하지 못했습니다. 저장 경로를 확인하거나 게시글을 새로고침해주세요.', true);
   }
 }
 
@@ -140,28 +173,27 @@ $('refresh').addEventListener('click', () => guarded(async () => {
   await chrome.tabs.sendMessage(tabId, {type: 'SCAN'});
   await refresh(); notice('본문 이미지를 다시 확인했습니다.');
 }));
-$('autoDownload').addEventListener('change', () => guarded(async () => {
-  // The auto switch must still work while a folder draft is invalid. Save
-  // only the switch against the last accepted settings, leaving drafts alone.
-  if (!savedSettings) return;
-  const previous = savedSettings.autoDownload;
-  try {
-    savedSettings = await request('SAVE_SETTINGS', {settings: {...savedSettings, autoDownload: $('autoDownload').checked}});
-    notice(savedSettings.autoDownload ? '자동 저장을 켰습니다.' : '자동 저장을 껐습니다. 진행 중인 작업은 중지 버튼으로 멈출 수 있습니다.');
-  } catch (error) {$('autoDownload').checked = previous; throw error;}
-}));
+$('folder').addEventListener('input', () => {
+  settingsLoaded = true;
+  $('folder').setCustomValidity('');
+  updateDestination();
+});
+$('folder').addEventListener('keydown', event => {
+  if (event.key === 'Enter') {event.preventDefault(); guarded(saveSettings);}
+});
 $('saveSettings').addEventListener('click', () => guarded(saveSettings));
 $('download').addEventListener('click', () => guarded(async () => {
   $('download').disabled = true;
   try {
-    await saveSettings();
-    const result = await request('DOWNLOAD', {tabId, postKey: currentScan.post.key, ids: [...selected]});
+    // Pass the typed folder with the same message that enqueues this batch.
+    // No separate settings request can race and replace its destination.
+    const folder = readFolder();
+    const result = await request('DOWNLOAD', {tabId, postKey: currentScan.post.key, ids: [...selected], folder});
+    $('folder').value = folder;
+    updateDestination();
     notice(result.queued ? `${result.queued}장을 다운로드 대기열에 추가했습니다.` : '선택한 이미지가 이미 다운로드 중입니다.');
     await refresh();
   } finally {updateSelection();}
-}));
-$('clearHistory').addEventListener('click', () => guarded(async () => {
-  await request('CLEAR_HISTORY'); notice('자동 저장 이력을 초기화했습니다. 다음 방문부터 다시 저장됩니다.');
 }));
 guarded(async () => {
   const [tab] = await chrome.tabs.query({active: true, currentWindow: true});

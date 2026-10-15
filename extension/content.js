@@ -88,20 +88,6 @@
       sendResponse({ ok: !stopped });
     }
   });
-  if (chrome.storage && chrome.storage.onChanged) {
-    chrome.storage.onChanged.addListener((changes, area) => {
-      // Ignore scan/progress/history writes to avoid a feedback loop with the
-      // background worker. Settings writes force a resend, including auto enable.
-      if (area !== "local" && area !== "sync") return;
-      const changed = Object.entries(changes).some(([key, change]) => {
-        if (/settings|preferences|auto|quality|folder/i.test(key)) return true;
-        // The shared worker persists settings and jobs together under state.
-        // Compare only settings so each queue/progress write cannot retrigger us.
-        return key === "state" && JSON.stringify(change.oldValue && change.oldValue.settings) !== JSON.stringify(change.newValue && change.newValue.settings);
-      });
-      if (changed) scan(true);
-    });
-  }
   observer = new MutationObserver(schedule);
   observer.observe(document.documentElement, {
     childList: true, subtree: true, characterData: true, attributes: true,
