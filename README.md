@@ -1,13 +1,13 @@
-# Naver Blog Image Downloader v0.2.0
+# Naver Blog Image Downloader v0.2.1
 
 This is a historical extension checkpoint restored on 2026-10-15 from the
-preserved nblogdl-chrome-0.2.0.zip. It is not an original Git commit from
+preserved nblogdl-chrome-0.2.1.zip. It is not an original Git commit from
 the development date. See HISTORY.md for scope, hashes, and limitations.
 
 The extension/ files match the preserved archive byte for byte. Original
 per-version tests and README files were not preserved. This README was
 written during reconstruction. Use the latest release for installation.
 
-Archive SHA-256: FF197CDF83BE586199DAC3D193B080954D43F0EC9D96ACC9D33643F3C395DC2B
+Archive SHA-256: 8AC40226D1BA6AEF186FE96FBC92E70F58F26129826B716376B0E2F3F0F28EFE
 
 https://github.com/hsofficial/nblogdl-chrome/releases/latest

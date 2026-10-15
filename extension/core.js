@@ -6,7 +6,7 @@
 
   const BLOG_HOSTS = new Set(["blog.naver.com", "m.blog.naver.com"]);
   const BODY_SELECTORS = [".se-main-container", "#postViewArea", ".post_ct"];
-  const EXCLUDED = "#comment, #comments, #commentArea, #commentList, .comment, .comments, .u_cbox, .post_comment, .blog-profile, .profile, .widget, .sidebar, script, template";
+  const EXCLUDED = "#comment, #comments, #commentArea, #commentList, .comment, .comments, .u_cbox, .post_comment, .blog-profile, .profile, .widget, .sidebar, .se-sticker, .se-module-sticker, .se-sticker-image, .__se_sticker_link, script, template";
 
   function getPostIdentity(value) {
     try {
@@ -138,6 +138,18 @@
       if (node.closest(EXCLUDED)) continue;
       const isImage = node.tagName.toLowerCase() === "img";
       const image = isImage ? node : node.querySelector("img");
+      // Naver's photo viewer includes photo links, not every <img> in the
+      // article. A sticker is also an <img> on pstatic.net, so check the typed
+      // owner of BOTH paths (metadata link and nested image) before reading
+      // its src. Keep plain legacy images with no explicit link type.
+      const owner = node.closest("[data-linktype]");
+      const imageOwner = image && image.closest("[data-linktype]");
+      if ((owner && owner.getAttribute("data-linktype") !== "img") ||
+          (imageOwner && imageOwner.getAttribute("data-linktype") !== "img")) continue;
+      if (image && image.closest(EXCLUDED)) continue;
+      // Arbitrary link metadata without a rendered photo is not a gallery
+      // member. Explicit image metadata can still describe a lazy photo.
+      if (!image && node.getAttribute("data-linktype") !== "img") continue;
       const metadataNode = node.hasAttribute("data-linkdata") ? node : node.closest("[data-linkdata]");
       let metadata = {};
       if (metadataNode && body.contains(metadataNode)) {
@@ -148,8 +160,6 @@
       }
       // Ignore arbitrary links: only explicit image metadata or actual images
       // qualify. Never follow href values, which may point to another post.
-      if (image && image.closest(EXCLUDED)) continue;
-      if (!image && node.getAttribute("data-linktype") && node.getAttribute("data-linktype") !== "img") continue;
       const displayed = image && (normalizeImageUrl(image.currentSrc, location.href) || normalizeImageUrl(image.getAttribute("src"), location.href));
       const src = normalizeImageUrl(metadata.src, location.href) || (image && (
         normalizeImageUrl(image.getAttribute("data-lazy-src"), location.href) ||
