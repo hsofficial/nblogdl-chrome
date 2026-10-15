@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>네이버 블로그 이미지 다운로더</title>
+  <link rel="stylesheet" href="popup.css">
+  <script src="core.js" defer></script>
+  <script src="popup.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="brand"><span class="mark" aria-hidden="true">N</span><div><h1>블로그 이미지 저장</h1><p>사진은 선명하게, 저장은 간편하게</p></div></div>
+    <span class="version">v0.1</span>
+  </header>
+  <main>
+    <section class="auto-panel" aria-label="자동 다운로드">
+      <div><strong>게시글을 열면 자동 저장</strong><p>이미 저장한 사진은 자동으로 건너뜁니다.</p></div>
+      <label class="switch"><input id="autoDownload" type="checkbox" aria-label="게시글 자동 저장"><span></span></label>
+    </section>
+    <section class="post-panel">
+      <div class="eyebrow">현재 게시글 <button id="refresh" class="text-button" type="button">다시 찾기</button></div>
+      <h2 id="postTitle">게시글을 확인하고 있습니다.</h2>
+      <p id="postMeta" class="muted">네이버 블로그의 개별 게시글을 열어주세요.</p>
+      <div class="selection-row"><label><input id="selectAll" type="checkbox"> 전체 선택</label><span id="selectionCount">0장 선택</span></div>
+      <div id="images" class="image-grid" aria-label="본문 이미지 미리보기"></div>
+      <div id="empty" class="empty"><span class="empty-icon" aria-hidden="true"></span><strong>저장할 사진을 찾고 있습니다.</strong><p>본문이 로드되면 이미지가 여기에 표시됩니다.</p></div>
+    </section>
+    <section class="download-panel">
+      <button id="download" class="primary" type="button" disabled>선택한 이미지 저장</button>
+      <p id="notice" role="status" aria-live="polite">원본 주소를 먼저 시도하고, 실패하면 고해상도 주소를 사용합니다.</p>
+      <div id="jobs" aria-label="다운로드 진행 상황"></div>
+    </section>
+    <details class="settings">
+      <summary>저장 설정</summary>
+      <label for="quality">이미지 품질</label>
+      <select id="quality"><option value="original">원본 주소 우선</option><option value="w3840">고해상도 w3840 우선</option></select>
+      <label for="folder">다운로드 폴더 안의 저장 경로</label>
+      <input id="folder" type="text" value="NaverBlog" maxlength="120" placeholder="NaverBlog" spellcheck="false">
+      <p class="muted">게시글별 폴더에 순서대로 저장됩니다. 브라우저의 기본 다운로드 폴더를 기준으로 합니다.</p>
+      <button id="saveSettings" class="secondary" type="button">설정 저장</button>
+      <button id="clearHistory" class="text-button history-button" type="button">자동 저장 이력 초기화</button>
+      <p class="muted">초기화 후 다음 방문부터 다시 자동 저장됩니다.</p>
+    </details>
+    <details class="diagnostics"><summary>진행 로그</summary><pre id="logs">Waiting for scan.</pre></details>
+  </main>
+  <footer><span>내 브라우저에서 처리</span><a href="https://github.com/hsofficial/nblog-img-downloder" target="_blank" rel="noreferrer">원본 프로젝트 · GPLv3</a></footer>
+</body>
+</html>

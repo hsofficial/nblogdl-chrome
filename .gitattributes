@@ -1,0 +1,6 @@
+* text=auto
+*.png binary
+*.zip binary
+extension/** -text
+
+# Keep archived extension bytes exact when restoring historical ZIP snapshots.

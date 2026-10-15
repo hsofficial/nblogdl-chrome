@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "네이버 블로그 이미지 다운로더",
+  "version": "0.1.0",
+  "description": "네이버 블로그 본문 이미지를 고해상도 주소로 자동 저장하고 미리보기와 선택 다운로드를 제공합니다.",
+  "minimum_chrome_version": "120",
+  "permissions": ["storage", "downloads", "alarms", "activeTab"],
+  "host_permissions": ["https://blog.naver.com/*", "https://m.blog.naver.com/*"],
+  "background": {"service_worker": "background.js"},
+  "action": {"default_popup": "popup.html", "default_title": "네이버 블로그 이미지 저장"},
+  "content_scripts": [{
+    "matches": ["https://blog.naver.com/*", "https://m.blog.naver.com/*"],
+    "js": ["core.js", "content.js"],
+    "all_frames": true,
+    "run_at": "document_idle"
+  }],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; img-src 'self' https://*.pstatic.net https://pstatic.net https://blogfiles.naver.net https://postfiles.naver.net; style-src 'self'"
+  }
+}
