@@ -1,6 +1,6 @@
 # Naver Blog Image Downloader 연구노트
 
-최신 작업은 **2026-10-15 작업 턴 005**, 현재 확장 버전은 **0.4.0**입니다. hsofficial 계정의 공개 GitHub 저장소와 배포, 보존된 ZIP을 근거로 한 순차 커밋·태그, 공개용 설치 안내를 준비합니다. 프로그램의 이전 요구사항과 검증 기록은 그대로 유지합니다. 게시 결과는 턴 005 최종 기록을 확인합니다.
+최신 작업은 **2026-10-15 작업 턴 005**, 현재 확장 버전은 **0.4.0**입니다. 공개 저장소 https://github.com/hsofficial/nblogdl-chrome 와 v0.4.0 GitHub Release를 게시했습니다. 보존 ZIP을 근거로 0.1.0부터 순차 소스 커밋·태그 5개를 만들고 공개용 설치 README를 포함했습니다. 프로그램의 이전 요구사항과 검증 기록은 그대로 유지합니다. 게시 근거와 검증은 턴 005 최종 기록을 확인합니다.
 
 현재 요구사항은 **작업 턴 002**를 우선합니다. 자동 저장 기능은 제거하고 사용자가 누르는 다운로드만 실행하며, 품질은 w3840 우선으로 고정합니다. 작업 턴 001의 자동 실행·품질 선택 설명은 당시 구현의 이력입니다.
 
@@ -32,6 +32,17 @@
 - `HISTORY.md`에 보존 ZIP의 5개 SHA-256과 복원 범위·불가능한 중간 편집 이력, 현재 시각 커밋 원칙을 기록하고 `CHANGELOG.md`에 버전별 변경을 정리했습니다. 루트 GPL 전문과 합성 팝업 라이트/다크 이미지 2개도 추가했습니다. 제품 참고 사진과 임시 작업·다운로드·아티팩트는 Git 제외 대상입니다.
 - 확장 실행 코드는 이번 턴에서 변경하지 않았습니다. 다시 실행한 `npm test`: **64개 통과, 실패 0개**. 최신 설치 ZIP은 기존 검증된 64,008 bytes / SHA-256 `F6B045ED507420CC6619049CF1F1A6C08ED9A6630EF398A91D466A4CCE711DBE`를 사용하며 체크섬 파일도 준비했습니다.
 - 이 단계에서 원격 저장소 생성·push·Release 게시 결과는 아직 미확정이며, 실제 반환 결과와 원격 대조 후 아래에 추가합니다.
+
+### 최종 게시 결과·원격 검증
+
+- `gh repo create hsofficial/nblogdl-chrome --public` 및 main/태그 push 완료. 저장소: **https://github.com/hsofficial/nblogdl-chrome**. 원격 조회는 `visibility: PUBLIC`, `isPrivate: false`, 기본 브랜치 main, 루트 라이선스 GNU GPLv3를 반환했습니다. 원본 `hsofficial/nblog-img-downloder`는 수정하지 않았습니다.
+- 복원 커밋과 주제: `7b2e7f0` v0.1.0 초기 다운로더 → `aa7ae43` v0.2.0 수동·폴더·아이콘 → `1dd411a` v0.2.1 스티커 제외 → `1a42fc1` v0.3.0 출처·IU 테마 → `f555d3d` v0.4.0 화면 모드·현재 개발 자료·공개 문서. 각 태그 v0.1.0, v0.2.0, v0.2.1, v0.3.0, v0.4.0이 동일 커밋을 가리키는 것을 `git ls-remote`로 대조했습니다. 작성 시각은 모두 실제 복원 시각입니다.
+- 모든 extension 소스의 Git blob이 대응 체크포인트 ZIP 파일의 원본 바이트와 같은 것을 확인했습니다. 공개 대상 스테이징에는 흔한 토큰/개인 키 서명이 없음을 검사했으며, 임시 복원 도구·로컬 다운로드·제품 참고 사진은 포함하지 않았습니다. 유일한 공개 화면 이미지는 합성 팝업 라이트/다크 캡처입니다.
+- `gh release create v0.4.0 ... --verify-tag --latest` 완료. 공개 주소: **https://github.com/hsofficial/nblogdl-chrome/releases/tag/v0.4.0**. 원격에서 `isDraft: false`, `isPrerelease: false`와 첨부 파일 2개를 확인했습니다.
+- 설치 파일: https://github.com/hsofficial/nblogdl-chrome/releases/download/v0.4.0/nblogdl-chrome-0.4.0.zip (64,008 bytes). 체크섬: 같은 릴리스의 `SHA256SUMS.txt` (92 bytes). 원격 asset digest도 `sha256:f6b045ed507420cc6619049cf1f1a6c08ed9a6630ef398a91d466a4cce711dbe`로 일치합니다.
+- `gh release download`로 공개 릴리스의 실제 ZIP을 `.release-work/download-check/`에 다시 내려받았습니다. 원격 ZIP SHA-256과 기존 로컬 0.4.0 ZIP SHA-256이 일치합니다. 설치 README는 최신 릴리스 다운로드 링크·Source code ZIP의 `extension/` 선택 차이를 설명합니다.
+- 앱 실행 변경은 없으며 이번 턴의 로직 테스트 64개 통과를 재확인했습니다. Chrome 웹 스토어에 등록한 것은 아니며 README와 릴리스에도 GitHub ZIP/압축해제 설치 방식임을 표시했습니다. 네이티브 다운로드 검증의 기존 한계는 이전 턴을 유지합니다.
+- 서브에이전트 2명을 취합 후 종료했습니다. 게시 결과 연구노트 변경은 후속 문서 커밋으로 보존하며 v0.4.0 태그의 프로그램 소스는 다시 쓰지 않습니다. 다음 에이전트는 이 기록을 먼저 읽고 공개 Git 저장소의 다음 커밋으로 작업을 이어갑니다.
 
 ## 2026-10-15 / 작업 턴 004 / 응원봉 보정·아이콘 링크·화면 모드
 
