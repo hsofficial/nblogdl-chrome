@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>오픈소스 안내 | 네이버 블로그 이미지 다운로더</title>
+  <link rel="icon" href="icons/icon-128.png" type="image/png">
+  <link rel="stylesheet" href="about.css">
+  <script src="about.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">본문으로 이동</a>
+  <div class="page">
+    <header class="masthead">
+      <div class="brand">
+        <img src="icons/icon-128.png" width="52" height="52" alt="">
+        <div>
+          <p class="brand-name">네이버 블로그 이미지 다운로더</p>
+          <p class="brand-caption">Chrome 확장프로그램</p>
+        </div>
+      </div>
+      <span class="version" id="projectVersion" aria-label="확장프로그램 버전">버전 확인 중</span>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="pageTitle">
+        <p class="eyebrow">ABOUT &amp; OPEN SOURCE</p>
+        <h1 id="pageTitle">좋은 도구의 시작을,<br>함께 남깁니다.</h1>
+        <p class="hero-description">네이버 블로그 이미지 다운로더의 오픈소스 출처와 라이선스 안내입니다.
+          원본 프로젝트, 참고 자료, 개발 도구의 역할을 확인하실 수 있습니다.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="https://github.com/hsofficial" target="_blank" rel="noreferrer noopener">hsofficial GitHub <span class="external" aria-hidden="true">&#8599;</span><span class="sr-only"> (새 탭)</span></a>
+          <a class="button secondary" href="#license">라이선스 전문 보기 <span aria-hidden="true">&#8595;</span></a>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="sourceTitle">
+        <div class="section-heading">
+          <div><p class="eyebrow">01 / SOURCE</p><h2 id="sourceTitle">원본과 이식</h2></div>
+          <span class="badge">GPL-3.0-only</span>
+        </div>
+        <article class="card source-card">
+          <p class="card-label">원본 프로젝트</p>
+          <h3>nblog-img-downloder</h3>
+          <p class="credit-author">HyeonSu Na · hsofficial</p>
+          <p>Python 원본의 DOM 메타데이터 선택과 <code>w3840</code> 이미지 주소 전략을
+            Chrome Manifest V3용 JavaScript로 이식했습니다. 한국어 팝업, 이미지 선택,
+            수동 다운로드와 진행 상태 관리는 확장프로그램에 맞게 구현했습니다.</p>
+          <div class="source-note">이 확장프로그램은 GNU GPL version 3으로 배포합니다.
+            실행 소스와 라이선스 전문은 확장 패키지에 포함되어 있습니다.</div>
+          <nav class="credit-links" aria-label="원본 프로젝트 링크">
+            <a href="https://github.com/hsofficial/nblog-img-downloder" target="_blank" rel="noreferrer noopener">원본 소스<span class="sr-only"> (새 탭)</span></a>
+            <a href="https://github.com/hsofficial" target="_blank" rel="noreferrer noopener">작성자<span class="sr-only"> (새 탭)</span></a>
+            <a href="https://github.com/hsofficial/nblog-img-downloder/blob/main/LICENSE" target="_blank" rel="noreferrer noopener">원본 라이선스<span class="sr-only"> (새 탭)</span></a>
+          </nav>
+        </article>
+      </section>
+
+      <section class="section" aria-labelledby="referenceTitle">
+        <div class="section-heading">
+          <div><p class="eyebrow">02 / REFERENCE</p><h2 id="referenceTitle">전략 비교에 참고한 프로젝트</h2></div>
+        </div>
+        <article class="card">
+          <div class="card-heading"><h3>gallery-dl</h3><span class="badge neutral">참고 자료</span></div>
+          <p class="credit-author">Mike Fährmann · gallery-dl 기여자</p>
+          <p>Naver Blog 추출기의 지연 로딩 이미지 주소와 URL 처리 전략을 비교했습니다.
+            gallery-dl의 소스 코드를 복사하지 않았으며, 소스 파일이나 실행 의존성을 확장 패키지에 포함하지 않았습니다.</p>
+          <p class="license-note">참고 소스의 라이선스: GNU GPL version 2. 공식 저장소의 LICENSE와 추출기 파일의 라이선스 표기를 확인했습니다.</p>
+          <nav class="credit-links" aria-label="gallery-dl 링크">
+            <a href="https://github.com/mikf/gallery-dl/blob/master/gallery_dl/extractor/naverblog.py" target="_blank" rel="noreferrer noopener">참고 소스<span class="sr-only"> (새 탭)</span></a>
+            <a href="https://github.com/mikf" target="_blank" rel="noreferrer noopener">작성자<span class="sr-only"> (새 탭)</span></a>
+            <a href="https://github.com/mikf/gallery-dl/blob/master/LICENSE" target="_blank" rel="noreferrer noopener">라이선스<span class="sr-only"> (새 탭)</span></a>
+          </nav>
+        </article>
+      </section>
+
+      <section class="section" aria-labelledby="toolsTitle">
+        <div class="section-heading">
+          <div><p class="eyebrow">03 / DEVELOPMENT</p><h2 id="toolsTitle">개발 과정에서 사용한 도구</h2></div>
+        </div>
+        <p class="section-description">아래 도구는 선택적인 개발 도구입니다. 확장프로그램에 동봉되지 않으며, 설치하거나 실행할 때 필요하지 않습니다.</p>
+        <div class="tool-grid">
+          <article class="card">
+            <p class="card-label">합성 GUI · DOM 검증</p>
+            <h3>Playwright <span class="tool-version">1.62.1</span></h3>
+            <p class="credit-author">Microsoft Corporation · Apache-2.0</p>
+            <p>별도 브라우저에서 합성 데이터로 팝업 GUI와 이미지 추출 DOM을 검증하는 데 사용했습니다. 실제 네이버 다운로드 검증과는 구분됩니다.</p>
+            <nav class="credit-links" aria-label="Playwright 링크">
+              <a href="https://github.com/microsoft/playwright" target="_blank" rel="noreferrer noopener">소스<span class="sr-only"> (새 탭)</span></a>
+              <a href="https://github.com/microsoft" target="_blank" rel="noreferrer noopener">작성자<span class="sr-only"> (새 탭)</span></a>
+              <a href="https://github.com/microsoft/playwright/blob/main/LICENSE" target="_blank" rel="noreferrer noopener">라이선스<span class="sr-only"> (새 탭)</span></a>
+            </nav>
+          </article>
+          <article class="card">
+            <p class="card-label">생성 아이콘 크기 변환</p>
+            <h3>Sharp <span class="tool-version">0.35.5</span></h3>
+            <p class="credit-author">Lovell Fuller · Apache-2.0</p>
+            <p>생성된 아이콘 PNG를 Chrome에 필요한 크기로 변환하는 데 사용했습니다. 라이브러리는 동봉하지 않고 변환된 PNG만 포함합니다.</p>
+            <nav class="credit-links" aria-label="Sharp 링크">
+              <a href="https://github.com/lovell/sharp" target="_blank" rel="noreferrer noopener">소스<span class="sr-only"> (새 탭)</span></a>
+              <a href="https://github.com/lovell" target="_blank" rel="noreferrer noopener">작성자<span class="sr-only"> (새 탭)</span></a>
+              <a href="https://github.com/lovell/sharp/blob/main/LICENSE" target="_blank" rel="noreferrer noopener">라이선스<span class="sr-only"> (새 탭)</span></a>
+            </nav>
+          </article>
+        </div>
+        <p class="verification-note">도구의 버전과 라이선스는 개발 환경에 설치된 각 패키지의 package.json 기준입니다. 확인일: 2026-10-15.</p>
+      </section>
+
+      <aside class="runtime-note" aria-labelledby="runtimeTitle">
+        <h2 id="runtimeTitle">실행은 가볍게, 안내는 로컬에서</h2>
+        <p>확장프로그램은 표준 JavaScript와 Chrome 기본 API로 동작하며, 외부 JavaScript 라이브러리를 동봉하지 않습니다.
+          Chrome API는 브라우저 플랫폼 기능입니다. 이 안내 페이지는 외부 폰트·이미지·스크립트를 불러오지 않으며,
+          외부 링크를 선택하면 해당 사이트가 새 탭에서 열립니다.</p>
+      </aside>
+
+      <section class="section" id="license" aria-labelledby="licenseTitle">
+        <div class="section-heading">
+          <div><p class="eyebrow">04 / LICENSE</p><h2 id="licenseTitle">동봉 라이선스 전문</h2></div>
+        </div>
+        <p class="section-description">GNU General Public License, version 3. 보증 없이 제공됩니다. 전체 조건은 아래 영문 원문을 확인해 주세요.</p>
+        <p id="licenseStatus" class="license-status" role="status">패키지에 포함된 LICENSE 파일을 불러오는 중입니다.</p>
+        <details class="license-details" id="licenseDetails">
+          <summary>GNU GPL version 3 전문 펼치기</summary>
+          <pre id="licenseText" tabindex="0" aria-label="GNU GPL version 3 라이선스 전문"></pre>
+        </details>
+        <p class="license-direct">별도 파일로 확인하기: <a href="LICENSE" target="_blank" rel="noreferrer noopener">동봉 LICENSE 열기<span class="sr-only"> (새 탭)</span></a></p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>네이버 블로그 이미지 다운로더 <span aria-hidden="true">/</span> 오픈소스 안내</p>
+      <p>출처·라이선스 확인 <time datetime="2026-10-15">2026-10-15</time></p>
+    </footer>
+  </div>
+</body>
+</html>

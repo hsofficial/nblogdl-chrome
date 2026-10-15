@@ -11,9 +11,13 @@
 <body>
   <header>
     <div class="brand"><img class="mark" src="icons/icon-48.png" alt="" aria-hidden="true"><div><h1>블로그 이미지 저장</h1><p>사진은 선명하게, 저장은 간편하게</p></div></div>
-    <span class="version">v0.2.1</span>
+    <div class="header-actions"><a id="githubProfile" class="github-button" href="https://github.com/hsofficial" target="_blank" rel="noopener noreferrer" aria-label="hsofficial GitHub 프로필 열기">GitHub</a><span class="version">v0.3.0</span></div>
   </header>
   <main>
+    <section id="iuThemeBanner" class="iu-banner" aria-label="아이유 응원봉 테마" hidden>
+      <img src="iu-lightstick.svg" alt="" aria-hidden="true">
+      <div><span class="iu-kicker">IU LIGHT</span><p>손틈새로 비추는 아이유 참좋다&#x1F49C;</p></div>
+    </section>
     <section class="post-panel">
       <div class="eyebrow">현재 게시글 <button id="refresh" class="text-button" type="button">다시 찾기</button></div>
       <h2 id="postTitle">게시글을 확인하고 있습니다.</h2>
@@ -38,6 +42,6 @@
     </details>
     <details class="diagnostics"><summary>진행 로그</summary><pre id="logs">Waiting for scan.</pre></details>
   </main>
-  <footer><span>내 브라우저에서 처리</span><a href="https://github.com/hsofficial/nblog-img-downloder" target="_blank" rel="noreferrer">원본 프로젝트 · GPLv3</a></footer>
+  <footer><span>내 브라우저에서 처리</span><button id="openSource" class="text-button" type="button">오픈소스 안내</button></footer>
 </body>
 </html>

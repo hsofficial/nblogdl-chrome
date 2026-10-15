@@ -59,6 +59,11 @@ function renderScan(scan) {
   const oldIds = new Set(currentScan?.images.map(image => image.id) || []);
   if (currentScan?.post.key !== scan?.post.key) {selected.clear(); oldIds.clear();}
   currentScan = scan;
+  // Theme follows the current title, never a saved preference. Switching to
+  // another post or clearing a stale scan must restore the default palette.
+  const iuTheme = Boolean(scan?.title.includes('\uC544\uC774\uC720'));
+  document.documentElement.classList.toggle('iu-theme', iuTheme);
+  $('iuThemeBanner').hidden = !iuTheme;
   lastSignature = signature;
   const images = scan?.images || [];
   for (const id of selected) if (!images.some(image => image.id === id)) selected.delete(id);
@@ -182,6 +187,10 @@ $('folder').addEventListener('keydown', event => {
   if (event.key === 'Enter') {event.preventDefault(); guarded(saveSettings);}
 });
 $('saveSettings').addEventListener('click', () => guarded(saveSettings));
+$('openSource').addEventListener('click', () => guarded(() => {
+  const suffix = document.documentElement.classList.contains('iu-theme') ? '?theme=iu' : '';
+  return chrome.tabs.create({url: chrome.runtime.getURL('about.html') + suffix});
+}));
 $('download').addEventListener('click', () => guarded(async () => {
   $('download').disabled = true;
   try {

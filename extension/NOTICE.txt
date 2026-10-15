@@ -1,4 +1,4 @@
-Naver Blog Image Downloader for Chrome, version 0.2.1
+Naver Blog Image Downloader for Chrome, version 0.3.0
 SPDX-License-Identifier: GPL-3.0-only
 
 This extension reimplements the DOM metadata selection and w3840 candidate
@@ -15,6 +15,10 @@ and a generated framed-N icon with a lower-left download badge.
 Automatic downloading and selectable image quality were removed in 0.2.0.
 Version 0.2.1 excludes typed non-photo links and sticker components from the
 article scan, matching the 37-photo viewer in the reported Naver Blog post.
+Version 0.3.0 retains that fix and adds the hsofficial GitHub profile link,
+a local open-source credits/license page, and a title-triggered IU palette
+with a locally authored light-stick SVG. The product photograph supplied as
+visual reference is not included in the extension package.
 Explicit HTML/text/JSON/XML error artifacts created by this extension are
 removed before retrying; ambiguous MIME types are retained for inspection.
 The Selenium image-viewer/network selection is not included.
