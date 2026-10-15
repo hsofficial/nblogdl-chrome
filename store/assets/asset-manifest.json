@@ -1,0 +1,57 @@
+{
+  "version": "0.4.0",
+  "generatedAt": "2026-10-15T08:18:09.630Z",
+  "source": "unchanged-extension-ui-with-mocked-chrome-apis",
+  "sampleImages": true,
+  "nativeDownloadsPerformed": false,
+  "files": [
+    {
+      "file": "01-select-1280x800.png",
+      "width": 1280,
+      "height": 800,
+      "kind": "annotated-ui-screenshot"
+    },
+    {
+      "file": "02-folders-1280x800.png",
+      "width": 1280,
+      "height": 800,
+      "kind": "annotated-ui-screenshot"
+    },
+    {
+      "file": "03-dark-1280x800.png",
+      "width": 1280,
+      "height": 800,
+      "kind": "annotated-ui-screenshot"
+    },
+    {
+      "file": "04-iu-1280x800.png",
+      "width": 1280,
+      "height": 800,
+      "kind": "annotated-ui-screenshot"
+    },
+    {
+      "file": "05-open-source-1280x800.png",
+      "width": 1280,
+      "height": 800,
+      "kind": "annotated-ui-screenshot"
+    },
+    {
+      "file": "promo-small-440x280.png",
+      "width": 440,
+      "height": 280,
+      "kind": "promotional-graphic"
+    },
+    {
+      "file": "promo-marquee-1400x560.png",
+      "width": 1400,
+      "height": 560,
+      "kind": "promotional-graphic"
+    },
+    {
+      "file": "icon-current-128.png",
+      "width": 128,
+      "height": 128,
+      "kind": "current-package-icon-review-branding-before-submit"
+    }
+  ]
+}

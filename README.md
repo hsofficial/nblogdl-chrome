@@ -114,6 +114,8 @@ Chrome 다운로드 폴더/
 
 ## 개인정보와 권한
 
+처리 정보·보관·외부 요청·삭제 범위는 [개인정보처리방침](PRIVACY.md)에 정리했습니다. 웹스토어 등록용 문안과 규격 이미지는 [등록 준비 자료](store/README.md)를 확인해주세요. 자료 준비가 완료된 것과 웹스토어 심사 제출·승인은 별개이며, 현재 버전에는 제출 전 정리할 중복 권한이 있습니다.
+
 **현재 v0.4.0 소스 기준으로 별도 수집 서버, 분석·광고 SDK, 외부 텔레메트리 전송 코드는 없습니다.** 사진 미리보기와 다운로드를 위해 네이버 이미지 서버에 요청하며, 사용자가 누른 GitHub·출처 링크는 해당 사이트를 엽니다. 네트워크 요청이 전혀 없는 도구라는 뜻은 아닙니다.
 
 현재 탭에서 찾은 게시글 제목·주소·이미지 주소는 `chrome.storage.session`에 임시 보관합니다. 저장을 요청한 작업의 제목·주소·이미지 정보·실제 파일 경로·상태와 저장 설정은 `chrome.storage.local`에 보관합니다. 종료한 작업은 최근 30개, 진행 로그는 최근 60개를 유지합니다. 화면 모드도 로컬에 저장하며 `storage.sync`는 사용하지 않습니다. 로컬 저장소의 수명은 [Google storage API 문서](https://developer.chrome.com/docs/extensions/reference/api/storage)를 참고해주세요.
@@ -123,7 +125,7 @@ Chrome 다운로드 폴더/
 | `storage` | 저장 경로·화면 모드·작업 상태 보존 및 탭별 수집 정보 임시 보관 |
 | `downloads` | 사용자가 요청한 다운로드 시작·상태 확인·중지, 파일명 제안, 저장 위치 열기, 확인된 오류 응답 파일 정리 |
 | `alarms` | 시작한 다운로드 대기열의 상태 확인과 서비스 워커 재시작 후 복구 |
-| `activeTab` | 팝업에서 현재 탭을 확인하고 해당 게시글에 다시 찾기 요청 전달 |
+| `activeTab` | v0.4.0에 남아 있는 선언입니다. 기본 탭 ID 조회·메시지 전달에는 필요하지 않아 웹스토어 제출 전 제거·검증 대상입니다. |
 | `https://blog.naver.com/*`, `https://m.blog.naver.com/*` | 해당 네이버 블로그 페이지와 일치하는 본문 프레임에서 제목·사진 정보 읽기 |
 
 실제 선언은 [`extension/manifest.json`](extension/manifest.json), 처리는 [`content.js`](extension/content.js), [`background.js`](extension/background.js), [`popup.js`](extension/popup.js), [`theme.js`](extension/theme.js)에서 확인할 수 있습니다.
